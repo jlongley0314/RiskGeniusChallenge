@@ -1,0 +1,46 @@
+var fs = require('fs');
+var path = require('path');
+
+exports.get_all_receipts = function(req, res) {
+    // Receipt.find({}, function(err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     res.join(task);
+    // });
+    res.sendFile(path.join(__dirname, '../../assets', 'receipt_data.json'));
+};
+
+exports.create_receipt = function(req, res) {
+    // var new_receipt = new Receipt(req.body);
+    // new_receipt.save(function(err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     res.join(task);
+    // });
+};
+
+exports.read_receipt = function(req, res) {
+    // Receipt.findById(req.params.taskId, function(err, task) {
+    //    if (err)
+    //        res.send(err);
+    //    res.join(task);
+    // });
+};
+
+exports.update_receipt = function(req, res) {
+    // Receipt.update({_id: req.params.taskId}, req.body, {new: true}, function(err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     res.json(task);
+    // });
+};
+
+exports.delete_receipt = function(req, res) {
+    // Receipt.remove({
+    //     _id: req.params.taskId
+    // }, function(err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     res.json({ message: 'Receipt deleted' });
+    // });
+};
