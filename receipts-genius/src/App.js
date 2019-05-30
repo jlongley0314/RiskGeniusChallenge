@@ -1,93 +1,81 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
 import './App.css';
+import logo from './logo.svg';
+import Receipts from './components/receipts';
 
 class App extends Component {
-    state = {
-        response: '',
-        post: '',
-        responseToPost: '',
-    };
-    componentDidMount() {
-        this.callApi()
-            .then(res => this.setState({
-                response: res.express }))
-            .catch(err => console.log(err));
-    }
-    callApi = async () => {
-        const response = await fetch('/api/hello');
-        const body = await response.json();
 
-        if (response.status !== 200) throw Error(body.message);
-        return body;
-    };
-    handleSubmit = async e => {
-        e.preventDefault();
-        const response = await fetch('/api/world', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ post: this.state.post }),
-        });
-        const body = await response.text();
-        this.setState({ responseToPost: body });
-    };
+    state = {
+        receipts: []
+    }
+
+    componentDidMount() {
+        fetch('/api/receipts')
+            .then(res => {
+                console.log(res);
+                return res.json()
+            })
+            .then(receipts => {
+                console.log(receipts);
+                this.setState({ receipts })
+            });
+    }
+
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         name: '',
+    //         greeting: ''
+    //     };
+    //     this.handleChange = this.handleChange.bind(this);
+    //     this.handleSubmit = this.handleSubmit.bind(this);
+    // }
+    //
+    // handleChange(event) {
+    //     this.setState({ name: event.target.value });
+    // }
+    //
+    // handleSubmit(event) {
+    //     event.preventDefault();
+    //     fetch(`/api/greeting?name=${encodeURIComponent(this.state.name)}`)
+    //         .then(response => response.json())
+    //         .then(state => this.setState(state));
+    // }
+
     render() {
         return (
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <p>
-                        Edit <code>src/App.js</code> and save to reload.
-                    </p>
-                    <a
-                        className="App-link"
-                        href="https://reactjs.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Learn React
-                    </a>
-                </header>
-                <p>{this.state.response}</p>
-                <form onSubmit={this.handleSubmit}>
-                    <p>
-                        <strong>Post to Server:</strong>
-                    </p>
-                    <input
-                        type="text"
-                        value={this.state.post}
-                        onChange={e => this.setState({ post: e.target.value })}
-                    />
-                    <button type="submit">Submit</button>
-                </form>
-                <p>{this.state.responseToPost}</p>
-            </div>
+            <Receipts receipts={this.state.receipts} />
         );
+
+        // return (
+        //     <div className="App">
+        //         <header className="App-header">
+        //             <img src={logo} className="App-logo" alt="logo" />
+        //             <p>
+        //                 Edit <code>src/App.js</code> and save to reload.
+        //             </p>
+        //             <form onSubmit={this.handleSubmit}>
+        //                 <label htmlFor="name">Enter your name: </label>
+        //                 <input
+        //                     id="name"
+        //                     type="text"
+        //                     value={this.state.name}
+        //                     onChange={this.handleChange}
+        //                 />
+        //                 <button type="submit">Submit</button>
+        //             </form>
+        //             <p>{this.state.greeting}</p>
+        //             <a
+        //                 className="App-link"
+        //                 href="https://reactjs.org"
+        //                 target="_blank"
+        //                 rel="noopener noreferrer"
+        //             >
+        //                 Learn React
+        //             </a>
+        //         </header>
+        //     </div>
+        // );
     }
 }
 export default App;
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-//
-// export default App;

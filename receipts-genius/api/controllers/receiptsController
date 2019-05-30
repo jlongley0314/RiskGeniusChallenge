@@ -1,13 +1,18 @@
 var fs = require('fs');
 var path = require('path');
 
+exports.hello = function(req, res) {
+    const name = req.query.name || 'World';
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+};
+
+exports.world = function(req, res) {
+    res.send(`I received your POST request. This is what you sent me: ${req.body.post}`);
+};
+
 exports.get_all_receipts = function(req, res) {
-    // Receipt.find({}, function(err, task) {
-    //     if (err)
-    //         res.send(err);
-    //     res.join(task);
-    // });
-    res.sendFile(path.join(__dirname, '../../assets', 'receipt_data.json'));
+
 };
 
 exports.create_receipt = function(req, res) {
