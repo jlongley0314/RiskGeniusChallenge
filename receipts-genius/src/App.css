@@ -1,3 +1,11 @@
+body {
+  font-family: 'Muli', sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -17,6 +25,10 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.receipt-genius-header {
+  font-weight: 600;
 }
 
 .App-body {
@@ -74,9 +86,8 @@ h5.total-text {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 100vw;
+  width: 100%;
   padding: 1rem;
-  justify-content: space-between;
 }
 
 .single-receipt-container {
@@ -84,6 +95,9 @@ h5.total-text {
   flex-direction: row;
   margin-bottom: 2rem;
   padding: 1rem;
+  position: relative;
+  min-width: 15%;
+  align-items: center;
 }
 
   .single-receipt-container:hover {
@@ -92,24 +106,58 @@ h5.total-text {
 
 .receipt-container-trash {
   display: none;
+  position: absolute;
+  right: 5%;
+  top: 5%;
+}
+
+.receipt-container-trash.show {
+  display: block;
 }
 
 .receipt-img-container {
   border: black 1px solid;
-  padding: 1rem;
+  width: 8rem;
+  max-height: 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .receipt-img {
-  height: 4em;
+  width: 4rem;
+  margin: 1rem;
 }
 
 .receipt-body {
-  width: 15rem;
-  padding: 1.25rem;
+  width: 8rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   display: flex;
   flex-direction: column;
+  max-height: 8rem;
 }
 
-.receipt-body {
+.receipt-name {
+  font-weight: 600;
+  font-size: 0.9em;
+}
 
+.receipt-date {
+  font-weight: 300;
+  font-size: 0.75em;
+}
+
+.receipt-amount {
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.receipt-category {
+
+}
+
+.receipt-description {
+  font-weight: 300;
+  font-size: 0.75em;
 }

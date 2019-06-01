@@ -21,18 +21,22 @@ const Receipts = ({ receipts }) => {
         }
     };
 
-    function showTrashCan(show) {
+    function showTrashCan(show, id) {
         if (show) {
-            $(".receipt-container-trash").css("display", "absolute");
+            var containerChildren = document.getElementById(id).children;
+            var trash = containerChildren[0];
+            trash.classList.add("show");
         } else {
-
+            var containerChildren = document.getElementById(id).children;
+            var trash = containerChildren[0];
+            trash.classList.remove("show");
         }
-    }
+    };
 
     return (
         <div class="App-main">
             <div class="App-header">
-                <center><h4><FontAwesomeIcon icon={faReceipt} /> <em>Receipt</em>Genius</h4></center>
+                <center><h4 class="receipt-genius-header"><FontAwesomeIcon icon={faReceipt} /> <em>Receipt</em>Genius</h4></center>
             </div>
 
             <div class="App-body">
@@ -46,8 +50,10 @@ const Receipts = ({ receipts }) => {
                 </div>
                 <div class="receipts-container">
                 {receipts.map((receipt) => (
-                    <div class="single-receipt-container" onmouseover="showTrashCan(true)">
-                        <FontAwesomeIcon class="receipt-container-trash" icon={faTrash} />
+                    <div id={receipt.id} class="single-receipt-container" onMouseEnter={() => showTrashCan(true, receipt.id)} onMouseLeave={() => showTrashCan(false, receipt.id)}>
+                        <div class="receipt-container-trash">
+                            <FontAwesomeIcon icon={faTrash} />
+                        </div>
                         <div class="receipt-img-container">
                             {(() => {
                                 if (receipt.file.type == "application/pdf") {
