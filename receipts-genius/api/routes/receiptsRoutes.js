@@ -12,4 +12,10 @@ module.exports = function(app) {
         .get(controller.read_receipt)
         .put(controller.update_receipt)
         .delete(controller.delete_receipt);
+
+    app.route('/hello')
+        .get(controller.hello);
+
+    app.route('/world')
+        .put(controller.world);
 };
