@@ -184,3 +184,47 @@ h5.total-text {
 div.modal-header {
   background-color: #F8F8F8;
 }
+
+.calendar-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-icon {
+  height: calc(1.25rem + 2px);
+  width: calc(1.25rem + 2px);
+  margin-left: 5%;
+}
+
+.category-btn {
+    background: white;
+    border-color: black;
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+    .category-btn:hover {
+        border-color: black;
+        background: #DCDCDC;
+    }
+
+    .category-btn.selected {
+        background: #DCDCDC;
+    }
+
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.cancel-btn {
+    width: 40%;
+}
+
+.submit-btn {
+    width: 50%;
+    margin-left: 5%;
+}
