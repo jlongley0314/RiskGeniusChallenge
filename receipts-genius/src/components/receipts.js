@@ -16,6 +16,8 @@ export class Receipts extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onAmountInputChange = this.onAmountInputChange.bind(this);
         this.handleFiles = this.handleFiles.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCategorySelect = this.handleCategorySelect.bind(this);
 
         this.state = {
             receipts: [],
@@ -35,11 +37,9 @@ export class Receipts extends React.Component {
     componentDidMount() {
         fetch('/api/receipts')
             .then(res => {
-                console.log(res);
                 return res.json()
             })
             .then(receipts => {
-                console.log(receipts);
                 this.setState({ receipts })
             });
     }
@@ -57,8 +57,52 @@ export class Receipts extends React.Component {
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+            alert("invalid");
+            // this.setState({ validated: true });
+        } else {
+
+
         }
-        this.setState({ validated: true });
+
+        console.log(this.state.receipts);
+
+        var total = Number(this.state.total.replace(/\$|,/g, ''));
+
+        var newReceipt = {
+            id: this.state.receipts.length,
+            name: this.state.name,
+            date: this.state.date,
+            total: total,
+            category: this.state.category,
+            file: {
+                name: this.state.fileName,
+                type: this.state.fileType,
+                size: this.state.fileSize,
+            }
+        };
+
+        var joined = this.state.receipts.concat(newReceipt);
+        this.setState({ receipts: joined });
+        this.handleClose();
+    }
+
+    handleChange(event) {
+        const target = event.target;
+        const name = target.name;
+        var value = target.value;
+        this.setState({
+            [name]: value
+        });
+    }
+
+    handleCategorySelect(event) {
+        const value = event.target.id;
+        if (this.state.category === value) {
+            this.setState({category: ''});
+        } else {
+            this.setState({category: value});
+        }
+
     }
 
     handleFiles(event) {
@@ -69,12 +113,15 @@ export class Receipts extends React.Component {
     }
 
     onAmountInputChange(e){
-        const re = /^[0-9\b]+$/;
+        const re = /^\$?\-?([1-9]{1}[0-9]{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\-?\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\(\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))\)$/
+
         if (e.target.value === '' || re.test(e.target.value))  {
             e.target.value = e.target.value;
         } else {
             e.target.value = '';
         }
+
+        this.setState({total: e.target.value});
     }
 
     render() {
@@ -108,24 +155,6 @@ export class Receipts extends React.Component {
                 trash.classList.remove("show");
             }
         };
-
-        function selectCategory(id) {
-            var selected = document.getElementById(id);
-            var addSelected = selected.classList.contains("selected")
-            var categories = document.getElementsByClassName("category-btn");
-            for (var i = 0; i < categories.length; i++) {
-                var category = categories[i];
-                if (category.classList.contains("selected")) {
-                    category.classList.remove("selected");
-                }
-            }
-
-            // Removes selected if the list already contains it
-            if (!addSelected) {
-                selected.classList.add("selected");
-            }
-
-        }
 
         function amountSetMoney() {
             var amtInput = document.getElementById("amountInput");
@@ -210,7 +239,7 @@ export class Receipts extends React.Component {
                         <Form
                             noValidate
                             validated={validated}
-                            onSubmit={e => this.handleSubmit(e)}
+                            // onSubmit={e => this.handleSubmit(e)}
                         >
                             <Form.Row>
                                 <Form.Group as={Col} md="12" id="fileInput" controlId="validationCustom01">
@@ -224,7 +253,7 @@ export class Receipts extends React.Component {
                             <Form.Row>
                                 <Form.Group as={Col} md="8" controlId="validationCustom01">
                                     <Form.Label>Vendor/Retailer*</Form.Label>
-                                    <Form.Control type="text" placeholder="Vendor" required/>
+                                    <Form.Control type="text" name="name" placeholder="Vendor" onChange={e => this.handleChange(e)} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide a vendor / retailor.
                                     </Form.Control.Feedback>
@@ -234,7 +263,7 @@ export class Receipts extends React.Component {
                                 <Form.Group as={Col} md="6" controlId="validationCustom01">
                                     <Form.Label>Transaction Date*</Form.Label>
                                     <div className="calendar-form-container">
-                                        <Form.Control name="calendar" id="datePicker" type="date" onClick={() => setMaxDate("datePicker")} required/>
+                                        <Form.Control name="date" id="datePicker" type="date" onChange={e => this.handleChange(e)} onClick={() => setMaxDate("datePicker")} required/>
                                         <FontAwesomeIcon class="calendar-icon" icon={faCalendar}/>
                                     </div>
                                     <Form.Control.Feedback type="invalid">
@@ -245,7 +274,7 @@ export class Receipts extends React.Component {
                             <Form.Row>
                                 <Form.Group as={Col} md="6" controlId="validationCustom01">
                                     <Form.Label>Receipt Total ($USD)*</Form.Label>
-                                    <Form.Control type="text" id="amountInput" onChange={this.onAmountInputChange} onBlur={() => amountSetMoney()} placeholder="Receipt Total" required/>
+                                    <Form.Control type="text" name="total" id="amountInput" onChange={this.onAmountInputChange} onBlur={() => amountSetMoney()} placeholder="Receipt Total" required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide a total.
                                     </Form.Control.Feedback>
@@ -253,20 +282,59 @@ export class Receipts extends React.Component {
                             </Form.Row>
                             <Form.Label>Category</Form.Label>
                             <Form.Row>
+                                {/*Add the selected class based on the category state change*/}
                                 <Col xs="4" >
-                                    <button type="button" id="supplies" onClick={() => selectCategory("supplies")} class="subscription-btn btn btn-light category-btn"> Supplies </button>
+                                    <button type="button" id="Supplies"
+                                        onClick={e => this.handleCategorySelect(e)}
+                                        className=
+                                            {(() => {
+                                            if (this.state.category == "Supplies") {
+                                                return (
+                                                    "subscription-btn btn btn-light category-btn selected"
+                                                )
+                                            } else {
+                                                return (
+                                                    "subscription-btn btn btn-light category-btn"
+                                                )
+                                            }
+                                        })()}
+                                    > Supplies </button>
                                 </Col>
                                 <Col xs="4" >
-                                    <button type="button" id="subscriptions" onClick={() => selectCategory("subscriptions")} class="subscription-btn btn btn-light category-btn"> Subscriptions </button>
+                                    <button type="button" id="Subscriptions"
+                                        onClick={e => this.handleCategorySelect(e)}
+                                        className={(() => {
+                                            if (this.state.category == "Subscriptions") {
+                                                return (
+                                                    "subscription-btn btn btn-light category-btn selected"
+                                                )
+                                            } else {
+                                                return (
+                                                    "subscription-btn btn btn-light category-btn"
+                                                )
+                                            }
+                                    })()}> Subscriptions </button>
                                 </Col>
                                 <Col xs="4" >
-                                    <button type="button" id="personal" onClick={() => selectCategory("personal")} class="subscription-btn btn btn-light category-btn"> Personal </button>
+                                    <button type="button" id="Personal"
+                                        onClick={e => this.handleCategorySelect(e)}
+                                        className={(() => {
+                                            if (this.state.category == "Personal") {
+                                                return (
+                                                    "subscription-btn btn btn-light category-btn selected"
+                                                )
+                                            } else {
+                                                return (
+                                                    "subscription-btn btn btn-light category-btn"
+                                                )
+                                            }
+                                    })()}> Personal </button>
                                 </Col>
                             </Form.Row>
                             <Form.Row>
                                 <Form.Group as={Col} md="12">
                                     <Form.Label>Description</Form.Label>
-                                    <Form.Control as="textarea" rows="3"/>
+                                    <Form.Control as="textarea" name="description" onChange={e => this.handleChange(e)} rows="3"/>
                                 </Form.Group>
                             </Form.Row>
                             <Form.Label>* Indicates a required field</Form.Label>
@@ -275,10 +343,10 @@ export class Receipts extends React.Component {
                                 </Col>
                                 <Col md="6" xs="8">
                                     <div class="button-container">
-                                        <button class="btn btn-secondary cancel-btn">
+                                        <button type="button" onClick={e => this.handleClose()} class="btn btn-secondary cancel-btn">
                                             Cancel
                                         </button>
-                                        <button className="btn btn-primary submit-btn">
+                                        <button type="button" onClick={e => this.handleSubmit(e)} className="btn btn-primary submit-btn">
                                             Add Receipt
                                         </button>
                                     </div>
