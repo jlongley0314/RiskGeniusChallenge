@@ -1,24 +1,23 @@
+import React from 'react';
+import {amountSetMoney, setMaxDate} from "../scripts/utilityFunctions";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
-import {amountSetMoney, setMaxDate} from "../scripts/utilityFunctions";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCalendar} from "@fortawesome/free-regular-svg-icons";
-import React from "react";
-import App from "../App";
 
-class ReceiptForm extends React.Component {
+class AddReceiptForm extends React.Component {
 
-    constructor(props, context, receipts) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
+        this.handleClose = this.handleClose.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onAmountInputChange = this.onAmountInputChange.bind(this);
         this.handleFiles = this.handleFiles.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleCategorySelect = this.handleCategorySelect.bind(this);
 
         this.state = {
-            receipts: receipts,
-            modalShow: false,
             name: "",
             date: "",
             total: "",
@@ -27,12 +26,19 @@ class ReceiptForm extends React.Component {
             fileName: "",
             fileType: "",
             fileSize: "",
-            validated: false
+            formNameClasses: "form-control",
+            formFileClasses: "form-control-file",
+            formAmountClasses: "form-control",
+            formDateClasses: "form-control"
         };
     }
 
+    handleClose() {
+        this.props.closeModal();
+    }
+
     handleSubmit(event) {
-        alert(this.state.receipts);
+
         var valid = true;
         var fileInput = this.refs.fileInput;
         var vendorRetailer = this.refs.vendorRetailer;
@@ -73,14 +79,13 @@ class ReceiptForm extends React.Component {
 
         if (valid) {
             var total = Number(this.state.total.replace(/\$|,/g, ''));
-            var lastReceiptID = this.state.receipts[this.state.receipts.length-1].id;
 
             // date in wrong format
             var dateSplit = this.state.date.split("-");
             var date = dateSplit[1] + "/" + dateSplit[2] + "/" + dateSplit[0];
 
             var newReceipt = {
-                id: lastReceiptID + 1,
+                id: this.props.lastReceiptID + 1,
                 name: this.state.name,
                 date: date,
                 total: total,
@@ -93,8 +98,10 @@ class ReceiptForm extends React.Component {
                 }
             };
 
-            var joined = this.state.receipts.concat(newReceipt);
-            this.setState({ receipts: joined });
+            this.props.addReceipt(newReceipt);
+
+            // var joined = this.state.receipts.concat(newReceipt);
+            // this.setState({ receipts: joined });
             this.handleClose();
         }
     }
@@ -123,6 +130,18 @@ class ReceiptForm extends React.Component {
         this.setState({fileName: file.name});
         this.setState({fileType: file.type});
         this.setState({fileSize: file.size});
+    }
+
+    onAmountInputChange(e){
+        const re = /^\$?\-?([1-9]{1}[0-9]{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\-?\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\(\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))\)$/
+
+        if (e.target.value === '' || re.test(e.target.value))  {
+            e.target.value = e.target.value;
+        } else {
+            e.target.value = '';
+        }
+
+        this.setState({total: e.target.value});
     }
 
     render() {
@@ -258,5 +277,4 @@ class ReceiptForm extends React.Component {
         );
     }
 }
-
-export default ReceiptForm;
+export default AddReceiptForm;

@@ -5,13 +5,13 @@ import {faFileImage} from "@fortawesome/free-regular-svg-icons";
 import {formatMoney, showTrashCan} from "../scripts/utilityFunctions";
 
 
-const ReceiptsContainer = ({ receipts }) => (
+const ReceiptsContainer = ({ receipts, onDeleteClick }) => (
     <div className="receipts-container">
         {receipts.map((receipt) => (
             <div id={receipt.id} className="single-receipt-container"
                  onMouseEnter={() => showTrashCan(true, receipt.id)}
                  onMouseLeave={() => showTrashCan(false, receipt.id)}>
-                <div onClick={() => this.deleteReceipt(receipt.id)} className="receipt-container-trash">
+                <div onClick={() => onDeleteClick(receipt.id)} className="receipt-container-trash">
                     <FontAwesomeIcon icon={faTrash}/>
                 </div>
                 <div className="receipt-img-container">
