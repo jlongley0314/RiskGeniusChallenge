@@ -1,15 +1,11 @@
 import React, {Component} from 'react';
 import './App.css';
-import Header from './components/header';
-import SubHeader from './components/subHeader'
-import ReceiptContainer from './components/receipts'
-import AddReceiptForm from './components/addReceiptForm'
-import  {formatMoney, amountSetMoney, setMaxDate} from './scripts/utilityFunctions'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendar} from "@fortawesome/free-regular-svg-icons";
+import Header from './components/Header';
+import SubHeader from './components/SubHeader'
+import ReceiptContainer from './components/Receipts'
+import AddReceiptForm from './components/AddReceiptForm'
+import  {formatMoney} from './scripts/utilityFunctions'
 import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/Col";
 
 class App extends Component {
 
